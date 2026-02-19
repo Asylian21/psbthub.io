@@ -1,0 +1,60 @@
+/*
+ * Shared landing section layout.
+ *
+ * Provides consistent wrapper, label, and title styles for all landing page
+ * content sections. Imported via @import in each section component's
+ * <style scoped> block.
+ *
+ * Depends on CSS variables inherited from LandingView.vue:
+ *   --section-padding-y, --page-padding-x, --content-max-width,
+ *   --accent, --heading
+ */
+
+.section {
+  position: relative;
+  z-index: 1;
+  padding: var(--section-padding-y) var(--page-padding-x);
+}
+
+.section-inner {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+}
+
+.section-label {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  text-align: center;
+  margin: 0 0 0.95rem;
+}
+
+.section-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(1.65rem, 4vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  text-align: center;
+  color: var(--heading);
+  margin: 0 0 clamp(2.5rem, 5vw, 3.75rem);
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 4.35rem 1.25rem;
+  }
+
+  .section-title {
+    margin-bottom: 2.55rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding: 3.9rem 1rem;
+  }
+}

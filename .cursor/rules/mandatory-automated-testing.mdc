@@ -1,0 +1,25 @@
+---
+description: Every new functionality must include automated tests
+alwaysApply: true
+---
+
+# Mandatory Automated Testing
+
+For this project, every new functionality must include automated tests.
+
+## Required policy
+
+- No new feature is considered complete without automated test coverage.
+- Every bug fix must include a regression test that fails before the fix and passes after it.
+- If behavior changes, existing tests must be updated to match the new expected behavior.
+
+## Coverage expectations
+
+- Add or update **unit tests** for domain logic, composables, utilities, and repositories.
+- Add or update **browser E2E tests** for user-visible flows and critical interactions.
+- Keep tests deterministic (no flaky timing assumptions or random external dependencies).
+
+## Delivery requirement
+
+- Run relevant test commands before finishing work.
+- If tests cannot be added in the same change, treat the task as incomplete and explicitly call it out as a blocker.

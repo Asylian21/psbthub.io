@@ -1,0 +1,97 @@
+/*
+ * Shared gradient CTA link with animated rotating border.
+ *
+ * Used by LandingHero and LandingBottomCta.
+ * Apply class "cta-glow-link" to any RouterLink / <a>.
+ *
+ * Depends on:
+ *   @property --border-angle (declared globally in LandingView.vue)
+ */
+
+.cta-glow-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.75rem;
+  padding: 0.9rem 2.5rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b, #d97706);
+  color: #0a0e1a;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow:
+    0 0 40px rgba(245, 158, 11, 0.25),
+    0 0 80px rgba(245, 158, 11, 0.08);
+  transition: all 0.3s ease;
+}
+
+.cta-glow-link:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 50px rgba(245, 158, 11, 0.35),
+    0 0 100px rgba(245, 158, 11, 0.12);
+}
+
+/* Continuous rotating border glow */
+.cta-glow-link::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 999px;
+  padding: 2px;
+  background: conic-gradient(
+    from var(--border-angle),
+    transparent 20%,
+    rgba(255, 255, 255, 0.3) 45%,
+    rgba(255, 255, 255, 0.65) 50%,
+    rgba(255, 255, 255, 0.3) 55%,
+    transparent 80%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  animation: cta-border-spin 4s linear infinite;
+}
+
+.cta-glow-link:hover::before {
+  background: conic-gradient(
+    from var(--border-angle),
+    transparent 20%,
+    rgba(255, 255, 255, 0.45) 45%,
+    rgba(255, 255, 255, 0.85) 50%,
+    rgba(255, 255, 255, 0.45) 55%,
+    transparent 80%
+  );
+  animation-duration: 2.5s;
+}
+
+.cta-glow-link .pi {
+  font-size: 0.85rem;
+  transition: transform 0.2s;
+}
+
+.cta-glow-link:hover .pi {
+  transform: translateX(3px);
+}
+
+@keyframes cta-border-spin {
+  to {
+    --border-angle: 360deg;
+  }
+}
+
+@media (max-width: 640px) {
+  .cta-glow-link {
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+  }
+}

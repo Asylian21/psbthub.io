@@ -1,0 +1,4 @@
+/* Global stylesheet entrypoint. */
+@import "tailwindcss";
+@import "./base/global.css";
+@import "./backgrounds/magicpattern.css";

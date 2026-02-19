@@ -1,0 +1,35 @@
+/*
+ * Shared step collapse transition and button styles.
+ *
+ * Used by HomeImportStep, HomeSecurityStep, and HomeExpiryStep
+ * for the expand/collapse animation on share creation steps.
+ *
+ * Each step component adds its own body variant
+ * (e.g. .share-step-collapsible-body--import) locally.
+ */
+
+.share-step--collapsed {
+  cursor: pointer;
+}
+
+.share-step-collapse-enter-active,
+.share-step-collapse-leave-active {
+  overflow: hidden;
+  will-change: height, opacity;
+  transition: height 0.3s ease, opacity 0.22s ease;
+}
+
+.share-step-collapsible-body {
+  min-height: 0;
+}
+
+:deep(.share-step-collapse-button.p-button) {
+  width: 2rem;
+  min-width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+}
+
+:deep(.share-step-collapse-button .p-button-icon) {
+  font-size: 0.78rem;
+}

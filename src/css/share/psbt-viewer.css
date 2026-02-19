@@ -1,0 +1,67 @@
+/*
+ * Shared PSBT display toolbar and mode selector.
+ *
+ * Used by HomeImportStep (import preview) and ShareView (decrypted payload).
+ * Provides the format-selector toolbar, mode option dots, and display hint.
+ */
+
+.psbt-view-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.psbt-view-label {
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.psbt-view-controls {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.55rem;
+  margin-left: auto;
+}
+
+:deep(.psbt-view-controls .p-selectbutton) {
+  display: inline-flex;
+  flex-wrap: wrap;
+}
+
+:deep(.psbt-view-controls .p-togglebutton) {
+  font-size: 0.76rem;
+  padding: 0.34rem 0.56rem;
+}
+
+.psbt-mode-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38rem;
+}
+
+.psbt-mode-option-dot {
+  width: 0.36rem;
+  height: 0.36rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--p-text-muted-color) 70%, transparent);
+  flex-shrink: 0;
+}
+
+.psbt-mode-option-dot--active {
+  background: var(--p-primary-color);
+}
+
+.psbt-mode-option-check {
+  font-size: 0.69rem;
+  margin-left: 0.12rem;
+}
+
+.psbt-display-hint {
+  margin: -0.2rem 0 0;
+  font-size: 0.76rem;
+  color: var(--p-text-muted-color);
+}

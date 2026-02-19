@@ -1,0 +1,25 @@
+---
+description: Prefer PrimeVue components for UI before building custom ones
+alwaysApply: true
+---
+
+# PrimeVue First for UI
+
+When implementing UI in this project, prefer existing PrimeVue components first.
+
+## Decision order
+
+1. Use a PrimeVue component when it can satisfy the requirement directly.
+2. Configure or compose PrimeVue components before creating a custom component.
+3. Build a custom UI component only if there is no suitable PrimeVue option, or if required behavior/styling cannot be achieved reasonably with PrimeVue.
+
+## Implementation guidance
+
+- Reuse PrimeVue patterns, props, and accessibility behavior whenever possible.
+- Keep custom wrappers thin when extending PrimeVue (do not duplicate full component behavior).
+- For custom components, document briefly why PrimeVue was not sufficient.
+
+## Examples
+
+- Prefer `DataTable`, `Dialog`, `Dropdown`, `InputText`, `Button`, `Toast` from PrimeVue when applicable.
+- Avoid creating a custom modal, table, select, or button if PrimeVue already provides an acceptable solution.

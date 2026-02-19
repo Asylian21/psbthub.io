@@ -1,0 +1,246 @@
+/*
+ * Shared countdown timer UI.
+ *
+ * Used by HomeExpiryStep (pre-upload preview + post-upload active)
+ * and HomeShareSuccessDialog (post-upload active).
+ *
+ * Includes: countdown shell, status/phase chips, live dot pulse,
+ * countdown grid with tick transitions, and responsive breakpoints.
+ *
+ * Depends on PrimeVue CSS variables:
+ *   --p-primary-color, --p-content-border-color, --p-content-background,
+ *   --p-text-color, --p-text-muted-color
+ * And app-level tokens:
+ *   --accent, --accent-light
+ */
+
+.share-expiry-countdown-shell {
+  position: relative;
+  margin-top: 0.18rem;
+  padding: 0.78rem 0.84rem 0.84rem;
+  border-radius: 0.78rem;
+  border: 1px solid color-mix(in srgb, var(--p-primary-color) 28%, var(--p-content-border-color));
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, var(--p-primary-color) 9%, var(--p-content-background, #0f172a)),
+    color-mix(in srgb, var(--p-content-background, #0f172a) 96%, transparent)
+  );
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 8%, transparent),
+    0 10px 22px color-mix(in srgb, #000000 16%, transparent);
+}
+
+.share-expiry-countdown-shell--success {
+  margin-top: 0;
+}
+
+.share-expiry-countdown-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.share-expiry-countdown-title-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.share-expiry-countdown-chip-row {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.34rem;
+}
+
+/* -- Live dot -- */
+.share-expiry-countdown-live-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+}
+
+.share-expiry-countdown-live-dot--active {
+  background: #22c55e;
+  box-shadow: 0 0 0 0 color-mix(in srgb, #22c55e 42%, transparent);
+  animation: expiry-countdown-pulse 1.8s ease-in-out infinite;
+}
+
+.share-expiry-countdown-live-dot--preview {
+  background: #f59e0b;
+  box-shadow: 0 0 0 0.24rem color-mix(in srgb, #f59e0b 14%, transparent);
+  animation: none;
+}
+
+.share-expiry-countdown-title {
+  font-size: 0.73rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--p-text-color);
+}
+
+/* -- Phase chip -- */
+.share-expiry-countdown-phase-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 650;
+  border: 1px solid transparent;
+}
+
+.share-expiry-countdown-phase-chip--active {
+  color: color-mix(in srgb, #3b82f6 85%, var(--p-text-color));
+  border-color: color-mix(in srgb, #3b82f6 42%, transparent);
+  background: color-mix(in srgb, #3b82f6 11%, transparent);
+}
+
+.share-expiry-countdown-phase-chip--preview {
+  color: color-mix(in srgb, #f59e0b 85%, var(--p-text-color));
+  border-color: color-mix(in srgb, #f59e0b 42%, transparent);
+  background: color-mix(in srgb, #f59e0b 11%, transparent);
+}
+
+/* -- Status chip -- */
+.share-expiry-countdown-status-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 650;
+  border: 1px solid transparent;
+}
+
+.share-expiry-countdown-status-chip--safe {
+  color: color-mix(in srgb, #22c55e 85%, var(--p-text-color));
+  border-color: color-mix(in srgb, #22c55e 40%, transparent);
+  background: color-mix(in srgb, #22c55e 11%, transparent);
+}
+
+.share-expiry-countdown-status-chip--warn {
+  color: color-mix(in srgb, #f59e0b 85%, var(--p-text-color));
+  border-color: color-mix(in srgb, #f59e0b 40%, transparent);
+  background: color-mix(in srgb, #f59e0b 12%, transparent);
+}
+
+.share-expiry-countdown-status-chip--critical {
+  color: color-mix(in srgb, #ef4444 85%, var(--p-text-color));
+  border-color: color-mix(in srgb, #ef4444 42%, transparent);
+  background: color-mix(in srgb, #ef4444 11%, transparent);
+}
+
+/* -- Context & schedule -- */
+.share-expiry-countdown-context {
+  margin: 0.3rem 0 0;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--p-text-muted-color);
+}
+
+.share-expiry-countdown-schedule {
+  margin: 0.32rem 0 0;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--p-text-muted-color);
+}
+
+.share-expiry-countdown-schedule strong {
+  color: var(--p-text-color);
+  font-family: 'Roboto Mono', monospace;
+}
+
+/* -- Countdown grid -- */
+.share-expiry-countdown-grid {
+  margin-top: 0.58rem;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.52rem;
+}
+
+.share-expiry-countdown-unit {
+  border-radius: 0.64rem;
+  border: 1px solid color-mix(in srgb, var(--p-content-border-color) 90%, transparent);
+  background: color-mix(in srgb, var(--p-content-background, #0f172a) 95%, transparent);
+  min-height: 4.05rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.16rem;
+  padding: 0.42rem;
+}
+
+.share-expiry-countdown-value {
+  display: inline-block;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 1.2rem;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--accent-light) 65%, #ffffff);
+  text-shadow: 0 0 14px color-mix(in srgb, var(--accent) 24%, transparent);
+}
+
+.share-expiry-countdown-label {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--p-text-muted-color);
+}
+
+/* -- Tick transition -- */
+.countdown-tick-enter-active,
+.countdown-tick-leave-active {
+  transition: opacity 0.24s ease, transform 0.24s ease;
+}
+
+.countdown-tick-enter-from {
+  opacity: 0;
+  transform: translateY(8px) scale(0.96);
+}
+
+.countdown-tick-leave-to {
+  opacity: 0;
+  transform: translateY(-8px) scale(1.04);
+}
+
+@keyframes expiry-countdown-pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, #22c55e 42%, transparent);
+  }
+
+  70% {
+    box-shadow: 0 0 0 0.48rem color-mix(in srgb, #22c55e 0%, transparent);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, #22c55e 0%, transparent);
+  }
+}
+
+/* -- Responsive -- */
+@media (prefers-reduced-motion: reduce) {
+  .share-expiry-countdown-live-dot,
+  .countdown-tick-enter-active,
+  .countdown-tick-leave-active {
+    animation: none !important;
+    transition: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .share-expiry-countdown-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

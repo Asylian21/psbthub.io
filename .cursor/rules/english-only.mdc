@@ -1,0 +1,18 @@
+---
+description: All code, comments, and documentation must be written in English
+alwaysApply: true
+---
+
+# English Only
+
+All project content must be written exclusively in English. This includes:
+
+- Source code (variable names, function names, class names)
+- Code comments (inline, block, JSDoc/TSDoc)
+- Documentation (README, CONTRIBUTING, changelogs)
+- Commit messages
+- Error messages and user-facing strings
+- TODO/FIXME annotations
+- File and directory names
+
+No exceptions. If translating existing non-English content, replace it with clear English equivalents.
