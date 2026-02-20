@@ -18,9 +18,10 @@ import { LANDING_TRUST_ITEMS } from '../../content/landingContent'
         <span class="hero-accent">Don&#39;t Trust. Verify.</span>
       </h1>
       <p class="hero-subtitle">
-        PSBTHub is a minimal PSBT relay for multisig signing workflows. Encrypt
-        in your browser, share a link (or a link + password), and verify/sign
-        in your own wallet. The server stores ciphertext only.
+        PSBTHub is a neutral bridge between Sparrow, Caravan, Specter, and
+        other PSBT-compatible tools. Encrypt in your browser, share a link (or
+        a link + password), and verify/sign in your own wallet. The server
+        stores ciphertext only.
       </p>
       <!-- CTA — custom styled RouterLink; PrimeVue Button not used here
            because the landing hero needs a fully custom gradient/glow style

@@ -1,6 +1,6 @@
 # ⚡️ PSBTHub
 
-**PSBTHub is an end-to-end encrypted PSBT relay for Bitcoin signers.** Built for secure, minimalist multisig handoffs. Your PSBT is encrypted exclusively on the client side — the server stores ciphertext only and never sees the transaction.
+**PSBTHub is an end-to-end encrypted PSBT relay for Bitcoin signers.** It acts as a neutral bridge between Sparrow, Caravan, Specter, and other PSBT-compatible tools. Built for secure, minimalist multisig handoffs, your PSBT is encrypted exclusively on the client side — the server stores ciphertext only and never sees the transaction.
 
 ---
 
@@ -19,7 +19,7 @@
 
 PSBTHub is a minimalist service designed for securely sharing **Partially Signed Bitcoin Transactions (PSBTs)** between signers.
 
-The goal is to eliminate the need to send PSBTs via Telegram, email, or random file-hosting services and replace that process with a simple, encrypted link. The service operates purely as a coordination layer.
+The goal is to eliminate the need to send PSBTs via Telegram, email, or random file-hosting services and replace that process with a simple, encrypted link. The service operates purely as a neutral coordination layer across wallet and coordinator setups.
 
 ---
 
