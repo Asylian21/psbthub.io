@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /app
+Disallow: /p/
+Disallow: /share/
+
+Sitemap: https://psbthub.io/sitemap.xml
