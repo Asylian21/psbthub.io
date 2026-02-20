@@ -29,6 +29,47 @@ test('ships restrictive CSP policy meta tag', async ({ page }) => {
   expect(cspContent).toContain("frame-ancestors 'none'")
 })
 
+test('ships foundational SEO metadata and crawler directives', async ({
+  page,
+  request,
+}) => {
+  await page.goto('/')
+
+  await expect(page).toHaveTitle('PSBTHub | Encrypted PSBT Relay for Bitcoin Multisig')
+  await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+    'content',
+    /end-to-end encrypted PSBT relay/i,
+  )
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
+    'content',
+    /index, follow/i,
+  )
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    'href',
+    'https://psbthub.io/',
+  )
+  await expect(page.locator('meta[property="og:title"]')).toHaveAttribute(
+    'content',
+    /Encrypted PSBT Relay/i,
+  )
+  await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute(
+    'content',
+    'summary_large_image',
+  )
+
+  const robotsResponse = await request.get('/robots.txt')
+  expect(robotsResponse.ok()).toBe(true)
+  const robotsText = await robotsResponse.text()
+  expect(robotsText).toContain('Disallow: /app')
+  expect(robotsText).toContain('Disallow: /p/')
+  expect(robotsText).toContain('Sitemap: https://psbthub.io/sitemap.xml')
+
+  const sitemapResponse = await request.get('/sitemap.xml')
+  expect(sitemapResponse.ok()).toBe(true)
+  const sitemapXml = await sitemapResponse.text()
+  expect(sitemapXml).toContain('<loc>https://psbthub.io/</loc>')
+})
+
 async function fillPsbtTextInput(page: Page): Promise<void> {
   await page.getByRole('button', { name: 'Paste base64 / hex' }).click()
   const psbtInput = page.locator('#psbt-input')
@@ -103,6 +144,9 @@ test('navigates from landing page to app', async ({ page }) => {
 
   await expect(
     page.getByRole('heading', { name: 'Hand Off PSBTs Between Signers,' }),
+  ).toBeVisible()
+  await expect(
+    page.getByText(/neutral bridge between Sparrow, Caravan, Specter/i),
   ).toBeVisible()
 
   await page.locator('a[href="/app"]').first().click()
