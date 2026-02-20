@@ -57,7 +57,13 @@ const route = useRoute()
 const router = useRouter()
 const { copy, copied } = useClipboard()
 const toast = useToast()
-const { state: fetchState, fetchShare, decryptWithPassword, deleteShare } = useFetch()
+const {
+  state: fetchState,
+  fetchShare,
+  decryptWithPassword,
+  deleteShare,
+  decryptCooldownEndTime,
+} = useFetch()
 
 const ONE_SECOND_IN_MILLISECONDS = 1000
 const COLLAPSED_PSBT_VIEWER_HEIGHT_PX = 108
@@ -73,6 +79,13 @@ const lifecycleTicker = useCountdownTicker({
   intervalMs: ONE_SECOND_IN_MILLISECONDS,
 })
 const lifecycleNowTimestamp = lifecycleTicker.nowTimestamp
+const decryptTicker = useCountdownTicker({
+  intervalMs: ONE_SECOND_IN_MILLISECONDS,
+})
+const decryptCooldownSeconds = computed<number>(() => {
+  const remaining = decryptCooldownEndTime.value - decryptTicker.nowTimestamp.value
+  return remaining > 0 ? Math.ceil(remaining / 1000) : 0
+})
 const isDeleteConfirmDialogVisible = ref(false)
 const isDeleteInProgress = ref(false)
 const isShareManuallyDeleted = ref(false)
@@ -471,6 +484,19 @@ watch(
 )
 
 watch(
+  () => decryptCooldownEndTime.value,
+  (endTime) => {
+    if (endTime > Date.now()) {
+      decryptTicker.syncNow()
+      decryptTicker.start()
+      return
+    }
+
+    decryptTicker.stop()
+  },
+)
+
+watch(
   () => fetchState.value.status,
   (nextStatus) => {
     if (nextStatus === 'success') {
@@ -523,6 +549,7 @@ onBeforeUnmount(() => {
   }
   window.removeEventListener('resize', handleWindowResize)
   stopLifecycleTicker()
+  decryptTicker.stop()
 })
 </script>
 
@@ -588,6 +615,7 @@ onBeforeUnmount(() => {
               :created-at-utc-display="createdAtUtcDisplay"
               :password-input="passwordInput"
               :password-prompt-message="passwordPromptMessage"
+              :decrypt-cooldown-seconds="decryptCooldownSeconds"
               @update:password-input="passwordInput = $event"
               @decrypt="decryptWithSubmittedPassword"
             />

@@ -54,6 +54,71 @@ describe('SharePasswordGate', () => {
     expect(wrapper.emitted('decrypt')).toHaveLength(1)
   })
 
+  it('does not emit decrypt when cooldown is active', async () => {
+    const wrapper = shallowMount(SharePasswordGate, {
+      props: {
+        createdAtDisplay: '',
+        createdAtUtcDisplay: '',
+        passwordInput: 'somepass',
+        passwordPromptMessage: '',
+        decryptCooldownSeconds: 3,
+      },
+      global: {
+        stubs: {
+          Password: PasswordStub,
+          Button: ButtonStub,
+          ShareCreatedAtInfo: true,
+        },
+      },
+    })
+
+    await wrapper.findComponent({ name: 'Button' }).trigger('click')
+    expect(wrapper.emitted('decrypt')).toBeUndefined()
+  })
+
+  it('shows cooldown message when decryptCooldownSeconds > 0', () => {
+    const wrapper = shallowMount(SharePasswordGate, {
+      props: {
+        createdAtDisplay: '',
+        createdAtUtcDisplay: '',
+        passwordInput: '',
+        passwordPromptMessage: 'Password is incorrect.',
+        decryptCooldownSeconds: 4,
+      },
+      global: {
+        stubs: {
+          Password: PasswordStub,
+          Button: ButtonStub,
+          ShareCreatedAtInfo: true,
+        },
+      },
+    })
+
+    expect(wrapper.text()).toContain('Try again in 4s')
+    expect(wrapper.text()).not.toContain('Password is incorrect.')
+  })
+
+  it('shows error message when no cooldown is active', () => {
+    const wrapper = shallowMount(SharePasswordGate, {
+      props: {
+        createdAtDisplay: '',
+        createdAtUtcDisplay: '',
+        passwordInput: '',
+        passwordPromptMessage: 'Password is incorrect.',
+        decryptCooldownSeconds: 0,
+      },
+      global: {
+        stubs: {
+          Password: PasswordStub,
+          Button: ButtonStub,
+          ShareCreatedAtInfo: true,
+        },
+      },
+    })
+
+    expect(wrapper.text()).toContain('Password is incorrect.')
+  })
+
   it('renders created-at info only when timestamp exists', () => {
     const withTimestamp = shallowMount(SharePasswordGate, {
       props: {

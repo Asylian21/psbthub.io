@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Button from 'primevue/button'
 import Password from 'primevue/password'
+import { computed } from 'vue'
 import ShareCreatedAtInfo from '../ShareCreatedAtInfo.vue'
 
 interface Props {
@@ -8,20 +9,35 @@ interface Props {
   createdAtUtcDisplay: string
   passwordInput: string
   passwordPromptMessage: string
+  decryptCooldownSeconds?: number
 }
 
-defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  decryptCooldownSeconds: 0,
+})
 
 const emit = defineEmits<{
   (event: 'update:passwordInput', value: string): void
   (event: 'decrypt'): void
 }>()
 
+const isCoolingDown = computed<boolean>(() => props.decryptCooldownSeconds > 0)
+
+const cooldownMessage = computed<string>(() => {
+  if (!isCoolingDown.value) {
+    return ''
+  }
+  return `Too many attempts. Try again in ${props.decryptCooldownSeconds}s.`
+})
+
 function handlePasswordInputUpdate(value: string | undefined): void {
   emit('update:passwordInput', value ?? '')
 }
 
 function handleDecryptRequest(): void {
+  if (isCoolingDown.value) {
+    return
+  }
   emit('decrypt')
 }
 </script>
@@ -41,6 +57,7 @@ function handleDecryptRequest(): void {
       id="share-password-input"
       :model-value="passwordInput"
       :feedback="false"
+      :disabled="isCoolingDown"
       toggle-mask
       input-class="w-full"
       class="password-gate-input"
@@ -52,11 +69,21 @@ function handleDecryptRequest(): void {
     <Button
       label="Decrypt with password"
       icon="pi pi-key"
+      :disabled="isCoolingDown"
       class="password-gate-button"
       @click="handleDecryptRequest"
     />
-    <p class="password-gate-message">
+    <p
+      v-if="passwordPromptMessage && !isCoolingDown"
+      class="password-gate-message password-gate-message--error"
+    >
       {{ passwordPromptMessage }}
+    </p>
+    <p
+      v-if="isCoolingDown"
+      class="password-gate-message password-gate-message--cooldown"
+    >
+      {{ cooldownMessage }}
     </p>
   </div>
 </template>
@@ -102,5 +129,14 @@ function handleDecryptRequest(): void {
   margin: 0;
   font-size: 0.8rem;
   color: var(--p-text-muted-color);
+}
+
+.password-gate-message--error {
+  color: var(--p-red-400, #f87171);
+}
+
+.password-gate-message--cooldown {
+  color: var(--p-yellow-400, #facc15);
+  font-variant-numeric: tabular-nums;
 }
 </style>

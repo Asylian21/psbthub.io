@@ -23,6 +23,12 @@ import {
   type ShareRepositoryError,
 } from '../infra/repositories/shareRepository'
 import { sanitizeObservabilityMessage } from '../infra/observability/errorMonitoring'
+import {
+  checkDecryptRateLimit,
+  recordDecryptAttempt,
+  getBrowserStorage,
+  DECRYPT_COOLDOWN_MS,
+} from '../utils/decryptRateLimit'
 
 export type FetchErrorCode =
   | 'INVALID_SHARE_ID'
@@ -85,6 +91,7 @@ export interface UseFetch {
   decryptWithPassword(password: string): Promise<void>
   deleteShare(shareId: string): Promise<DeleteShareResult>
   reset(): void
+  decryptCooldownEndTime: Ref<number>
 }
 
 const shareRepository = createShareRepository()
@@ -317,6 +324,7 @@ export function useFetch(): UseFetch {
   const passwordPendingShare = ref<PasswordPendingShare | null>(null)
   const activeDeleteCapabilityShareId = ref<string | null>(null)
   const activeDeleteCapabilityHash = ref<string | null>(null)
+  const decryptCooldownEndTime = ref<number>(0)
 
   function clearActiveDeleteCapability(): void {
     activeDeleteCapabilityShareId.value = null
@@ -464,7 +472,28 @@ export function useFetch(): UseFetch {
       return
     }
 
+    const storage = getBrowserStorage()
+
+    if (storage) {
+      const rateLimitResult = checkDecryptRateLimit(pendingShare.shareId, storage)
+
+      if (!rateLimitResult.allowed) {
+        const secondsRemaining = Math.ceil(rateLimitResult.retryAfterMs / 1000)
+        state.value = toAwaitingPasswordState(
+          pendingShare,
+          `Too many attempts. Try again in ${secondsRemaining}s.`,
+        )
+        decryptCooldownEndTime.value = Date.now() + rateLimitResult.retryAfterMs
+        return
+      }
+    }
+
     state.value = { status: 'loading' }
+
+    if (storage) {
+      recordDecryptAttempt(pendingShare.shareId, storage)
+      decryptCooldownEndTime.value = Date.now() + DECRYPT_COOLDOWN_MS
+    }
 
     try {
       const passwordKeyResult = await deriveShareKeyFromPassword(
@@ -609,5 +638,6 @@ export function useFetch(): UseFetch {
     decryptWithPassword,
     deleteShare,
     reset,
+    decryptCooldownEndTime,
   }
 }
